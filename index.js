@@ -1,6 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const { getTalker } = require('./utils/fsFunctions');
+const { validateEmail, validatePassword } = require('./middlewares/validateMiddleware');
+const { generateToken } = require('./utils/generateToken');
 
 const app = express();
 app.use(bodyParser.json());
@@ -20,6 +22,11 @@ app.get('/talker/:id', async (req, res) => {
   const found = talkers.find((talker) => talker.id === Number(id));
   if (!found) return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
   return res.status(200).json(found);
+});
+
+app.post('/login', validateEmail, validatePassword, (req, res) => {
+  const token = generateToken();
+  return res.status(200).json({ token });
 });
 
 // não remova esse endpoint, e para o avaliador funcionar

@@ -23,7 +23,7 @@ const validatePassword = (req, res, next) => {
   if (!password || password === '') {
     return res.status(400).json({ message: 'O campo "password" é obrigatório' });
   }
-  if (password < MIN_LENGTH) {
+  if (password.length < MIN_LENGTH) {
     return res.status(400).json({ message: 'O "password" deve ter pelo menos 6 caracteres' });
   }
   next();

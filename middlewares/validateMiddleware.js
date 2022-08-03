@@ -32,7 +32,7 @@ const validatePassword = (req, res, next) => {
 const validateToken = (req, res, next) => {
   const { authorization } = req.headers;
   const MIN_LENGTH = 16;
-  if (!authorization || authorization === '') {
+  if (!authorization) {
     return res.status(401).json({ message: 'Token não encontrado' });
   }
   if (authorization.length < MIN_LENGTH) {
@@ -40,5 +40,9 @@ const validateToken = (req, res, next) => {
   }
   next();
 };
+
+const validateName = (req, res, next) => {
+  const { name } = req.body;
+}
 
 module.exports = { validateEmail, validatePassword, validateToken };

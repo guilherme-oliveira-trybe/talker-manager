@@ -19,9 +19,10 @@ const HTTP_OK_STATUS = 200;
 const PORT = '3000';
 
 app.get('/talker/search', validateToken, async (req, res) => {
-  const { searchTerm } = req.query;
+  const { q: searchTerm } = req.query;
   const allTalkers = await getTalker();
   const talkerFound = allTalkers.filter((t) => t.name.includes(searchTerm));
+  console.log(talkerFound);
   if (!searchTerm || searchTerm === '') return res.status(200).json(allTalkers);
   if (!talkerFound) return res.status(200).json([]);
   return res.status(200).json(talkerFound);
@@ -46,33 +47,38 @@ app.post('/login', validateEmail, validatePassword, (req, res) => {
   return res.status(200).json({ token });
 });
 
-app.post('/talker', 
-validateToken, 
-validateName, 
-validateAge, 
-validateKeyTalk, 
-validateKeyWatchedAt, 
-validateKeyRate, 
-async (req, res) => {
+app.delete('/talker/:id', validateToken, async (req, res) => {
+  const { id } = req.params;
+  const allTalkers = await getTalker();
+  const talkerIndex = allTalkers.findIndex((t) => t.id === Number(id));
+  allTalkers.splice(talkerIndex, 1);
+  await setTalker(allTalkers);
+
+  return res.status(204).end();
+});
+
+app.use(
+  validateToken, 
+  validateName, 
+  validateAge, 
+  validateKeyTalk, 
+  validateKeyWatchedAt, 
+  validateKeyRate,
+);
+
+app.post('/talker', async (req, res) => {
   const newTalker = req.body;
   const allTalkers = await getTalker();
   const nextId = allTalkers.length + 1;
   if (!newTalker.id || newTalker.id === '') {
     newTalker.id = nextId;
   }
-  await setTalker([newTalker]);
+  await setTalker([...allTalkers, newTalker]);
 
   return res.status(201).json(newTalker);
 });
 
-app.put('/talker/:id', 
-validateToken, 
-validateName, 
-validateAge, 
-validateKeyTalk, 
-validateKeyWatchedAt, 
-validateKeyRate, 
-async (req, res) => {
+app.put('/talker/:id', async (req, res) => {
   const { id } = req.params;
   const newtalker = req.body;
   const editTalker = { id: Number(id), ...newtalker };
@@ -82,16 +88,6 @@ async (req, res) => {
   await setTalker([editTalker]);
 
   return res.status(200).json(editTalker);
-});
-
-app.delete('/talker/:id', validateToken, async (req, res) => {
-  const { id } = req.params;
-  const allTalkers = await getTalker();
-  const talkerIndex = allTalkers.findIndex((t) => t.id === Number(id));
-  allTalkers.splice(talkerIndex, 1);
-  await setTalker(allTalkers);
-
-  return res.status(204).end();
 });
 
 // não remova esse endpoint, e para o avaliador funcionar

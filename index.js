@@ -18,10 +18,13 @@ app.use(bodyParser.json());
 const HTTP_OK_STATUS = 200;
 const PORT = '3000';
 
-app.get('/talker', async (req, res) => {
-  const talkers = await getTalker();
-  if (!talkers) return res.status(200).json([]);
-  return res.status(200).json(talkers);
+app.get('/talker/search', validateToken, async (req, res) => {
+  const { searchTerm } = req.query;
+  const allTalkers = await getTalker();
+  const talkerFound = allTalkers.filter((t) => t.name.includes(searchTerm));
+  if (!searchTerm || searchTerm === '') return res.status(200).json(allTalkers);
+  if (!talkerFound) return res.status(200).json([]);
+  return res.status(200).json(talkerFound);
 });
 
 app.get('/talker/:id', async (req, res) => {
@@ -30,6 +33,12 @@ app.get('/talker/:id', async (req, res) => {
   const found = talkers.find((talker) => talker.id === Number(id));
   if (!found) return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
   return res.status(200).json(found);
+});
+
+app.get('/talker', async (req, res) => {
+  const talkers = await getTalker();
+  if (!talkers) return res.status(200).json([]);
+  return res.status(200).json(talkers);
 });
 
 app.post('/login', validateEmail, validatePassword, (req, res) => {
@@ -82,7 +91,7 @@ app.delete('/talker/:id', validateToken, async (req, res) => {
   allTalkers.splice(talkerIndex, 1);
   await setTalker(allTalkers);
 
-  res.status(204).end();
+  return res.status(204).end();
 });
 
 // não remova esse endpoint, e para o avaliador funcionar

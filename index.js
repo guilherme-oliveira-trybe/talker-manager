@@ -2,7 +2,14 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const { getTalker, setTalker } = require('./utils/fsFunctions');
 const { 
-  validateEmail, validatePassword, validateTalker } = require('./middlewares/validateMiddleware');
+  validateEmail, validatePassword, 
+  validateToken, 
+  validateName,
+  validateAge,
+  validateKeyTalk,
+  validateKeyWatchedAt,
+  validateKeyRate,
+} = require('./middlewares/validateMiddleware');
 const { generateToken } = require('./utils/generateToken');
 
 const app = express();
@@ -30,14 +37,16 @@ app.post('/login', validateEmail, validatePassword, (req, res) => {
   return res.status(200).json({ token });
 });
 
-app.post('/talker', validateTalker, async (req, res) => {
+app.post('/talker', 
+validateToken, 
+validateName, 
+validateAge, 
+validateKeyTalk, 
+validateKeyWatchedAt, 
+validateKeyRate, 
+async (req, res) => {
   const newTalker = req.body;
-  const allTalkers = await getTalker();
-  const isIdExists = allTalkers.some((t) => t.id === newTalker.id);
-
-  if (isIdExists) return res.status(409).json({ message: 'id already exists' });
-
-  await setTalker(allTalkers, newTalker);
+  await setTalker(newTalker);
 
   return res.status(201).json(newTalker);
 });

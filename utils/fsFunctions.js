@@ -9,9 +9,9 @@ const getTalker = async () => {
   }
 };
 
-const setTalker = async (allTalkers, newTalker) => {
+const setTalker = async (newTalker) => {
   try {
-    await fs.writeFile('./talker.json', JSON.stringify([...allTalkers, newTalker]));
+    await fs.writeFile('./talker.json', JSON.stringify([newTalker]));
   } catch (err) {
     console.error(err.message);
   }

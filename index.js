@@ -46,6 +46,11 @@ validateKeyWatchedAt,
 validateKeyRate, 
 async (req, res) => {
   const newTalker = req.body;
+  const allTalkers = await getTalker();
+  const nextId = allTalkers.length + 1;
+  if (!newTalker.id || newTalker.id === '') {
+    newTalker.id = nextId;
+  }
   await setTalker(newTalker);
 
   return res.status(201).json(newTalker);

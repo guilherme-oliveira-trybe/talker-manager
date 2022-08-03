@@ -95,11 +95,11 @@ const validateKeyWatchedAt = (req, res, next) => {
 
 const validateKeyRate = (req, res, next) => {
   const { talk: { rate } } = req.body;
-  const isInteger = Number.isInteger(rate);
+  // const isInteger = Number.isInteger(rate);
   if (!rate || rate === '') {
     return res.status(400).json({ message: 'O campo "rate" é obrigatório' });
   }
-  if (!isInteger || rate < 1 || rate > 5) {
+  if (rate < 1 || rate > 5) {
     return res.status(400).json({ message: 'O campo "rate" deve ser um inteiro de 1 à 5' });
   }
   next();

@@ -57,7 +57,7 @@ const validateName = (req, res, next) => {
 const validateAge = (req, res, next) => {
   const { age } = req.body;
   const MIN_AGE = 18;
-  if (!Number.isInteger(Number(age))) {
+  if (!Number.isInteger(age)) {
     return res.status(400).end();
   }
   if (!age || age === '') {
@@ -87,6 +87,16 @@ const validateWatchedAt = (req, res) => {
   }
   if (!validDate) {
     return res.status(400).json({ message: 'O campo "watchedAt" deve ter o formato "dd/mm/aaaa"' });
+  }
+};
+
+const validateRate = (req, res) => {
+  const { talk: { rate } } = req.body;
+  if (!rate || rate === '') {
+    return res.status(400).json({ message: 'O campo "rate" é obrigatório' });
+  }
+  if (!Number.isInteger(rate) < 1 || !Number.isInteger(rate) > 5) {
+    return res.status(400).json({ message: 'O campo "rate" deve ser um inteiro de 1 à 5' });
   }
 };
 

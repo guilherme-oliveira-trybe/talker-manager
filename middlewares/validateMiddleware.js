@@ -31,12 +31,12 @@ const validatePassword = (req, res, next) => {
 };
 
 const validateToken = (req, res, next) => {
-  const Authorization = req.headers;
+  const { authorization } = req.headers;
   const MIN_LENGTH = 16;
-  if (!Authorization) {
+  if (!authorization) {
     return res.status(401).json({ message: 'Token não encontrado' });
   }
-  if (Authorization.length < MIN_LENGTH) {
+  if (authorization.length < MIN_LENGTH) {
     return res.status(401).json({ message: 'Token inválido' });
   }
   next();

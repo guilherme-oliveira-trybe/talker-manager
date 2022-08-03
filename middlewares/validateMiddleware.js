@@ -69,7 +69,7 @@ const validateAge = (req, res, next) => {
   next();
 };
 
-const validateTalk = (req, res) => {
+const validateKeyTalk = (req, res) => {
   const { talk } = req.body;
   if (typeof (talk) !== 'object') {
     return res.status(400).end();
@@ -79,7 +79,7 @@ const validateTalk = (req, res) => {
   }
 };
 
-const validateWatchedAt = (req, res) => {
+const validateKeyWatchedAt = (req, res) => {
   const { talk: { watchedAt } } = req.body;
   const validDate = moment(watchedAt, 'DD/MM/YYYY', true).isValid();
   if (!watchedAt || watchedAt === '') {
@@ -90,7 +90,7 @@ const validateWatchedAt = (req, res) => {
   }
 };
 
-const validateRate = (req, res) => {
+const validateKeyRate = (req, res) => {
   const { talk: { rate } } = req.body;
   if (!rate || rate === '') {
     return res.status(400).json({ message: 'O campo "rate" é obrigatório' });
@@ -100,4 +100,18 @@ const validateRate = (req, res) => {
   }
 };
 
-module.exports = { validateEmail, validatePassword, validateToken, validateName, validateAge };
+const validateTalker = (req, res, next) => {
+  validateKeyTalk();
+  validateKeyWatchedAt();
+  validateKeyRate();
+  next();
+};
+
+module.exports = { 
+  validateEmail, 
+  validatePassword,
+  validateToken,
+  validateName,
+  validateAge,
+  validateTalker, 
+};

@@ -9,4 +9,12 @@ const getTalker = async () => {
   }
 };
 
-module.exports = { getTalker };
+const setTalker = async (allTalkers, newTalker) => {
+  try {
+    await fs.writeFile('./talker.json', JSON.stringify([...allTalkers, newTalker]));
+  } catch (err) {
+    console.error(err.message);
+  }
+};
+
+module.exports = { getTalker, setTalker };

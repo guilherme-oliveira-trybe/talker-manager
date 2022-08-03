@@ -11,7 +11,7 @@ const getTalker = async () => {
 
 const setTalker = async (newTalker) => {
   try {
-    await fs.writeFile('./talker.json', JSON.stringify([newTalker]));
+    await fs.writeFile('./talker.json', JSON.stringify(newTalker));
   } catch (err) {
     console.error(err.message);
   }

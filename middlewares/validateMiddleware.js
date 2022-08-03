@@ -96,7 +96,7 @@ const validateKeyWatchedAt = (req, res, next) => {
 const validateKeyRate = (req, res, next) => {
   const { talk: { rate } } = req.body;
   // const isInteger = Number.isInteger(rate);
-  if (!rate || rate === '') {
+  if (rate === undefined || rate === '') {
     return res.status(400).json({ message: 'O campo "rate" é obrigatório' });
   }
   if (rate < 1 || rate > 5) {

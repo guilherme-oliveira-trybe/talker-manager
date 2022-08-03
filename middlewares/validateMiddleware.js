@@ -29,4 +29,16 @@ const validatePassword = (req, res, next) => {
   next();
 };
 
-module.exports = { validateEmail, validatePassword };
+const validateToken = (req, res, next) => {
+  const { authorization } = req.headers;
+  const MIN_LENGTH = 16;
+  if (!authorization || authorization === '') {
+    return res.status(401).json({ message: 'Token não encontrado' });
+  }
+  if (authorization.length < MIN_LENGTH) {
+    return res.status(401).json({ message: 'Token inválido' });
+  }
+  next();
+};
+
+module.exports = { validateEmail, validatePassword, validateToken };

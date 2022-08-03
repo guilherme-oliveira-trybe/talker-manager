@@ -101,6 +101,9 @@ const validateKeyRate = (req, res) => {
 };
 
 const validateTalker = (req, res, next) => {
+  validateToken();
+  validateName();
+  validateAge();
   validateKeyTalk();
   validateKeyWatchedAt();
   validateKeyRate();
@@ -110,8 +113,5 @@ const validateTalker = (req, res, next) => {
 module.exports = { 
   validateEmail, 
   validatePassword,
-  validateToken,
-  validateName,
-  validateAge,
   validateTalker, 
 };

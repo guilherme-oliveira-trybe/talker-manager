@@ -1,7 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const { getTalker, setTalker } = require('./utils/fsFunctions');
-const { validateEmail, validatePassword } = require('./middlewares/validateMiddleware');
+const { 
+  validateEmail, validatePassword, validateTalker } = require('./middlewares/validateMiddleware');
 const { generateToken } = require('./utils/generateToken');
 
 const app = express();
@@ -29,17 +30,17 @@ app.post('/login', validateEmail, validatePassword, (req, res) => {
   return res.status(200).json({ token });
 });
 
-// app.post('/simpsons', async (req,res) => {
-//   const newSimpson = req.body;
-//   const allSimpsons = await getSimpsons();
-//   const isIdExists = allSimpsons.some((s) => s.id === newSimpson.id);
+app.post('/talker', validateTalker, async (req, res) => {
+  const newTalker = req.body;
+  const allTalkers = await getTalker();
+  const isIdExists = allTalkers.some((t) => t.id === newTalker.id);
 
-//   if (isIdExists) return res.status(409).json({ message: 'id already exists'});
+  if (isIdExists) return res.status(409).json({ message: 'id already exists' });
 
-//   await setSimpsons(allSimpsons, newSimpson);
+  await setTalker(allTalkers, newTalker);
 
-//   res.status(204).end();
-// })
+  return res.status(201).json(newTalker);
+});
 
 // não remova esse endpoint, e para o avaliador funcionar
 app.get('/', (_request, response) => {

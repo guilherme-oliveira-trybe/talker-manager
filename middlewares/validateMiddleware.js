@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const moment = require('moment');
 
 const app = express();
 app.use(bodyParser.json());
@@ -66,6 +67,27 @@ const validateAge = (req, res, next) => {
     return res.status(400).json({ message: 'A pessoa palestrante deve ser maior de idade' });
   }
   next();
+};
+
+const validateTalk = (req, res) => {
+  const { talk } = req.body;
+  if (typeof (talk) !== 'object') {
+    return res.status(400).end();
+  }
+  if (!talk || talk === '') {
+    return res.status(400).json({ message: 'O campo "talk" é obrigatório' });
+  }
+};
+
+const validateWatchedAt = (req, res) => {
+  const { talk: { watchedAt } } = req.body;
+  const validDate = moment(watchedAt, 'DD/MM/YYYY', true).isValid();
+  if (!watchedAt || watchedAt === '') {
+    return res.status(400).json({ message: 'O campo "watchedAt" é obrigatório' });
+  }
+  if (!validDate) {
+    return res.status(400).json({ message: 'O campo "watchedAt" deve ter o formato "dd/mm/aaaa"' });
+  }
 };
 
 module.exports = { validateEmail, validatePassword, validateToken, validateName, validateAge };
